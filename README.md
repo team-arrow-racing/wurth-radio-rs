@@ -8,7 +8,7 @@ Add an entry to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-wurth-radio-rs = "0.1.0"
+wurth-radio = "0.1.0"
 ```
 
 You can also enable the optional `defmt` feature.

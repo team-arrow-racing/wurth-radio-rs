@@ -1,5 +1,5 @@
 [package]
-name = "wurth-radio-rs"
+name = "wurth-radio"
 authors = [
     "The Team Arrow Racing Association firmware development team",
 ]
