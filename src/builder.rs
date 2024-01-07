@@ -1,34 +1,5 @@
 pub use crate::constants::*;
 
-#[derive(Debug, Clone, Copy)]
-pub enum WMBusMode {
-    S1M = 0x02, // Direction: TX Only; Role: meter
-    S2 = 0x03, // Direction: TX and RX; Role: meter or gateway
-    T1Meter = 0x05, // Direction: TX Only; Role: meter
-    T2Meter = 0x07, // Direction: TX and RX; Role: meter
-    T2Other = 0x08, // Direction: TX and RX; Role: gateway
-    C2T2Other = 0x09, // Direction: RX Only; Role: gateway
-    C1Meter = 0x0C, // Direction: TX Only; Role: meter
-    C2Meter = 0x0D, // Direction: TX and RX; Role: meter
-    C2Other = 0x0E // Direction: TX and RX; Role: gateway
-}
-
-impl Into<u8> for WMBusMode {
-    fn into(self) -> u8 {
-        match self {
-            WMBusMode::S1M => 0x02,
-            WMBusMode::S2 => 0x03,
-            WMBusMode::T1Meter => 0x05,
-            WMBusMode::T2Meter => 0x07,
-            WMBusMode::T2Other => 0x08,
-            WMBusMode::C2T2Other => 0x09,
-            WMBusMode::C1Meter => 0x0C,
-            WMBusMode::C2Meter => 0x0D,
-            WMBusMode::C2Other => 0x0E
-        }
-    }
-}
-
 pub struct CommandBuilder<'a, STAGE> {
     buffer: &'a mut [u8],
     index: usize,
@@ -115,7 +86,7 @@ impl<'a> CommandBuilder<'a, Uninitialized> {
         builder.try_append_data(&[FRAME_IDENTIFIER]);
         builder.try_append_data(&[CMD_SET_MODE_REQ]);
         builder.try_append_data(&[0x01]);
-        builder.try_append_data(&[mode.into()]);
+        builder.try_append_data(&[mode as u8]);
 
         builder
     }

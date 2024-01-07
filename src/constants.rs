@@ -43,8 +43,26 @@ pub const CMD_DATA_CNF: u8 = 0x80;
 /// Output of received data
 pub const CMD_DATA_IND: u8 = 0x03;
 
+/// Output of firmware version
+pub const CMD_FWV_CNF: u8 = 0x8C;
+
+/// Output of module rx level
+pub const CMD_RSSI_CNF: u8 = 0x8D;
 
 /// Response Status
 
 /// Frame sent successfully
 pub const FRAME_SEND_OK: u8 = 0x00;
+
+#[derive(Debug, Clone, Copy)]
+pub enum WMBusMode {
+    S1M = 0x02, // Direction: TX Only; Role: meter
+    S2 = 0x03, // Direction: TX and RX; Role: meter or gateway
+    T1Meter = 0x05, // Direction: TX Only; Role: meter
+    T2Meter = 0x07, // Direction: TX and RX; Role: meter
+    T2Other = 0x08, // Direction: TX and RX; Role: gateway
+    C2T2Other = 0x09, // Direction: RX Only; Role: gateway
+    C1Meter = 0x0C, // Direction: TX Only; Role: meter
+    C2Meter = 0x0D, // Direction: TX and RX; Role: meter
+    C2Other = 0x0E // Direction: TX and RX; Role: gateway
+}

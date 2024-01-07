@@ -1,7 +1,8 @@
 #![no_std]
 
-mod constants;
+pub mod constants;
 pub mod builder;
+pub mod parser;
 
 // pub struct Radio<S: Serial> {
 //     client: S

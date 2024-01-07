@@ -1,4 +1,6 @@
-use wurth_radio::builder::*;
+use wurth_radio::builder::CommandBuilder;
+use wurth_radio::parser::CommandParser;
+use wurth_radio::constants::*;
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -72,5 +74,25 @@ mod tests {
             .unwrap();
 
         assert_eq!(value, &[0xFF, 0x10, 0x01, 0x07, 0xE9]);
+    }
+
+    #[test]
+    fn test_parse_fimware() {
+        let fwv = CommandParser::parse(&[0xFF, 0x8C, 0x03, 0x02, 0x00, 0x06, 0x74])
+            .expect_identifier(&[CMD_FWV_CNF])
+            .expect_data()
+            .finish()
+            .unwrap();
+        assert_eq!(fwv, &[0x02, 0x00, 0x06]);
+    }
+
+    #[test]
+    fn test_parse_rssi() {
+        let fwv = CommandParser::parse(&[0xFF, 0x8D, 0x01, 0x99, 0x74])
+            .expect_identifier(&[CMD_RSSI_CNF])
+            .expect_data()
+            .finish()
+            .unwrap();
+        assert_eq!(fwv, &[0x99]);
     }
 }
