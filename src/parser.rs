@@ -1,95 +1,46 @@
 pub use crate::constants::*;
 
 pub struct CommandParser<'a> {
-    buffer: &'a [u8],
-    index: usize,
-    data_valid: bool,
-    payload_length: usize,
-    data: &'a [u8]
+    pub command: u8, 
+    pub payload_length: usize,
+    pub data: &'a [u8]
 }
 
 impl<'a> CommandParser<'a> {
-    pub fn parse(buffer: &'a [u8]) -> CommandParser<'a> {
-        CommandParser {
-            buffer,
-            index: 0,
-            data_valid: true,
-            payload_length: 0,
-            data: &[0],
+    pub fn parse(buffer: &'a [u8]) -> Result<CommandParser<'a>, ParseError> {
+        // This will handle data received on UART
+        let mut index = 0;
+        // Each message starts with the frame identifier (0xFF) and the command
+        let data_valid = buffer[index] == FRAME_IDENTIFIER && buffer.len() > MIN_PACKET_LENGTH.into();
+
+        if !data_valid {
+            return Err(ParseError(index));
         }
+
+        index += 1;
+        let command = buffer[index];
+
+        index += 1;
+        let payload_length: usize = buffer[index] as usize;
+
+        // Payload length should be the number of remaining bytes in the buffer minus 1 for the CS byte
+        if payload_length != buffer.len() - (index + 1) - 1 {
+            return Err(ParseError(index));
+        }
+
+        index += 1;
+        let data = &buffer[index..(buffer.len() - 1)];
+
+        // TODO perform a check on valid checksum byte
+
+        Ok(CommandParser {
+            command,
+            payload_length,
+            data,
+        })
     }
 }
 
-impl<'a> CommandParser<'a> {
-    /// Tries reading an identifier
-    pub fn expect_identifier(mut self, identifier: &[u8]) -> Self {
-        // If we're already not valid, then quit
-        if !self.data_valid {
-            return self;
-        }
-
-        // Each message starts with the frame identifier (0xFF) and the command 
-        if self.buffer[0] != 0xFF {
-            self.data_valid = false;
-            return self;
-        }
-
-        // First byte valid, shift index to next
-        self.index += 1;
-        
-        if self.buffer[self.index..].len() < identifier.len() {
-            self.data_valid = false;
-            return self;
-        }
-
-        // Check identifier is correct
-        if self.buffer[self.index] != identifier[0] {
-            self.data_valid = false;
-            return self;
-        }
-
-        // Identifier byte matches 
-        self.index += identifier.len();
-
-        self
-    }
-
-    pub fn expect_data(mut self) -> Self {
-        // Get the payloads length and shift the index
-        self.payload_length = self.buffer[self.index] as usize;
-        self.index += 1;
-
-         // Get the bytes in which the data should reside.
-         let data_slice = match self.buffer.get(self.index..(self.index + self.payload_length)) {
-             None => {
-                 return self;
-             }
-             Some(int_slice) => int_slice,
-         };
-         if data_slice.is_empty() {
-             // We probably hit the end of the buffer.
-             // The parameter is empty but as it is optional not invalid
-             // Advance the index to the character after the parameter separator (comma) if it's there.
-             return self;
-         }
-
-         // Increment index to next position
-         self.index += self.payload_length + 1;
-
-         self.data = data_slice;
-
-         self
-    }
-
-    /// Finish parsing the command and get the results
-    pub fn finish(self) -> Result<&'a [u8], ParseError> {
-        if self.data_valid {
-            Ok(self.data)
-        } else {
-            Err(ParseError(self.index))
-        }
-    }
-}
 /// Error type for parsing
 ///
 /// The number is the index of up to where it was correctly parsed

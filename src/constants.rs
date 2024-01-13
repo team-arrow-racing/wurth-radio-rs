@@ -4,6 +4,10 @@ pub const FRAME_IDENTIFIER: u8 = 0xFF;
 // Default max packet length
 pub const DEFAULT_MAX_PACKET_LENGTH: u8 = 250;
 
+// Minimum packet length
+// SFD CMD Length CS
+pub const MIN_PACKET_LENGTH: u8 = 4;
+
 /// Commands
 
 /// Transmission of wM-BUS data

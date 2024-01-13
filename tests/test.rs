@@ -1,5 +1,5 @@
 use wurth_radio::builder::CommandBuilder;
-use wurth_radio::parser::CommandParser;
+use wurth_radio::parser::*;
 use wurth_radio::constants::*;
 #[cfg(test)]
 mod tests {
@@ -78,21 +78,28 @@ mod tests {
 
     #[test]
     fn test_parse_fimware() {
-        let fwv = CommandParser::parse(&[0xFF, 0x8C, 0x03, 0x02, 0x00, 0x06, 0x74])
-            .expect_identifier(&[CMD_FWV_CNF])
-            .expect_data()
-            .finish()
-            .unwrap();
-        assert_eq!(fwv, &[0x02, 0x00, 0x06]);
+        let test_packet = [0xFF, 0x8C, 0x03, 0x02, 0x00, 0x06, 0x74];
+        let fwv = CommandParser::parse(&test_packet).unwrap();
+        
+        assert_eq!(fwv.command, CMD_FWV_CNF);
+        assert_eq!(fwv.payload_length, 0x03);
+        assert_eq!(fwv.data, &[0x02, 0x00, 0x06]);
     }
 
     #[test]
     fn test_parse_rssi() {
-        let fwv = CommandParser::parse(&[0xFF, 0x8D, 0x01, 0x99, 0x74])
-            .expect_identifier(&[CMD_RSSI_CNF])
-            .expect_data()
-            .finish()
-            .unwrap();
-        assert_eq!(fwv, &[0x99]);
+        let test_packet = [0xFF, 0x8D, 0x01, 0x99, 0x74];
+        let rssi = CommandParser::parse(&test_packet).unwrap();
+
+        assert_eq!(rssi.command, CMD_RSSI_CNF);
+        assert_eq!(rssi.payload_length, 0x01);
+        assert_eq!(rssi.data, &[0x99]);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_incorrect_payload_value() {
+        let test_packet = [0xFF, 0x8D, 0x01, 0x99, 0x89, 0x74];
+        let res = CommandParser::parse(&test_packet).unwrap();
     }
 }
