@@ -3,7 +3,7 @@ pub use crate::constants::*;
 pub struct CommandBuilder<'a, STAGE> {
     buffer: &'a mut [u8],
     index: usize,
-    phantom: core::marker::PhantomData<STAGE>
+    phantom: core::marker::PhantomData<STAGE>,
 }
 
 impl<'a> CommandBuilder<'a, Uninitialized> {
@@ -16,7 +16,7 @@ impl<'a> CommandBuilder<'a, Uninitialized> {
         let mut builder = CommandBuilder::<'a, Command> {
             buffer,
             index: 0,
-            phantom: Default::default()
+            phantom: Default::default(),
         };
 
         builder.try_append_data(&[FRAME_IDENTIFIER]);
@@ -32,7 +32,7 @@ impl<'a> CommandBuilder<'a, Uninitialized> {
         let mut builder = CommandBuilder::<'a, Command> {
             buffer,
             index: 0,
-            phantom: Default::default()
+            phantom: Default::default(),
         };
 
         builder.try_append_data(&[FRAME_IDENTIFIER]);
@@ -50,7 +50,7 @@ impl<'a> CommandBuilder<'a, Uninitialized> {
         let mut builder = CommandBuilder::<'a, Command> {
             buffer,
             index: 0,
-            phantom: Default::default()
+            phantom: Default::default(),
         };
 
         builder.try_append_data(&[FRAME_IDENTIFIER]);
@@ -65,7 +65,7 @@ impl<'a> CommandBuilder<'a, Uninitialized> {
         let mut builder = CommandBuilder::<'a, Command> {
             buffer,
             index: 0,
-            phantom: Default::default()
+            phantom: Default::default(),
         };
         // TODO inform that data must be a minimum of 9 bytes in length
         builder.try_append_data(&[FRAME_IDENTIFIER]);
@@ -81,7 +81,7 @@ impl<'a> CommandBuilder<'a, Uninitialized> {
         let mut builder = CommandBuilder::<'a, Command> {
             buffer,
             index: 0,
-            phantom: Default::default()
+            phantom: Default::default(),
         };
         builder.try_append_data(&[FRAME_IDENTIFIER]);
         builder.try_append_data(&[CMD_SET_MODE_REQ]);
@@ -101,7 +101,7 @@ impl<'a> CommandBuilder<'a, Uninitialized> {
         let mut builder = CommandBuilder::<'a, Command> {
             buffer,
             index: 0,
-            phantom: Default::default()
+            phantom: Default::default(),
         };
         builder.try_append_data(&[FRAME_IDENTIFIER]);
         builder.try_append_data(&[CMD_SETUARTSPEED_REQ]);
@@ -174,7 +174,6 @@ impl<'a, F: Finishable> CommandBuilder<'a, F> {
         self.try_append_data(&[cs_byte]);
     }
 }
-
 
 /// Marker struct for uninitialized builders.
 pub struct Uninitialized;

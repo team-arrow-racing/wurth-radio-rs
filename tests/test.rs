@@ -1,6 +1,6 @@
 use wurth_radio::builder::CommandBuilder;
-use wurth_radio::parser::*;
 use wurth_radio::constants::*;
+use wurth_radio::parser::*;
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -18,9 +18,7 @@ mod tests {
     #[test]
     fn test_reset_module() {
         let mut buffer = [0; 120];
-        let value = CommandBuilder::reset_module(&mut buffer)
-            .finish()
-            .unwrap();
+        let value = CommandBuilder::reset_module(&mut buffer).finish().unwrap();
 
         assert_eq!(value, &[0xFF, 0x05, 0x00, 0xFA]);
     }
@@ -28,9 +26,7 @@ mod tests {
     #[test]
     fn test_rx_level() {
         let mut buffer = [0; 120];
-        let value = CommandBuilder::get_rx_level(&mut buffer)
-            .finish()
-            .unwrap();
+        let value = CommandBuilder::get_rx_level(&mut buffer).finish().unwrap();
 
         assert_eq!(value, &[0xFF, 0x0D, 0x00, 0xF2]);
     }
@@ -43,7 +39,10 @@ mod tests {
             .finish()
             .unwrap();
 
-        assert_eq!(value, &[0xFF, 0x00, 0x09, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x00, 0xF6]);
+        assert_eq!(
+            value,
+            &[0xFF, 0x00, 0x09, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x00, 0xF6]
+        );
 
         // Response for successful transmission is
         // 0xFF 0x80 0x01 0x00 0x7E
@@ -58,7 +57,7 @@ mod tests {
     #[test]
     fn test_set_mode() {
         let mut buffer = [0; 120];
-        let mode =  WMBusMode::S1M;
+        let mode = WMBusMode::S1M;
         let value = CommandBuilder::set_mode(&mut buffer, mode)
             .finish()
             .unwrap();
@@ -80,7 +79,7 @@ mod tests {
     fn test_parse_fimware() {
         let test_packet = [0xFF, 0x8C, 0x03, 0x02, 0x00, 0x06, 0x74];
         let fwv = CommandParser::parse(&test_packet).unwrap();
-        
+
         assert_eq!(fwv.command, CMD_FWV_CNF);
         assert_eq!(fwv.payload_length, 0x03);
         assert_eq!(fwv.data, &[0x02, 0x00, 0x06]);

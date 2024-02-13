@@ -1,8 +1,6 @@
 [package]
 name = "wurth-radio"
-authors = [
-    "The Team Arrow Racing Association firmware development team",
-]
+authors = ["The Team Arrow Racing Association firmware development team"]
 description = "Driver for the Würth Elektronik Wireless Radio module."
 categories = ["embedded", "no-std"]
 version = "0.1.0"
@@ -17,4 +15,4 @@ embedded-hal = "0.2.7"
 heapless = "0.7.16"
 
 [features]
-defmt = [ "heapless/defmt"]
+defmt = ["heapless/defmt"]

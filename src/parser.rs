@@ -1,9 +1,9 @@
 pub use crate::constants::*;
 
 pub struct CommandParser<'a> {
-    pub command: u8, 
+    pub command: u8,
     pub payload_length: usize,
-    pub data: &'a [u8]
+    pub data: &'a [u8],
 }
 
 impl<'a> CommandParser<'a> {
@@ -11,7 +11,8 @@ impl<'a> CommandParser<'a> {
         // This will handle data received on UART
         let mut index = 0;
         // Each message starts with the frame identifier (0xFF) and the command
-        let data_valid = buffer[index] == FRAME_IDENTIFIER && buffer.len() > MIN_PACKET_LENGTH.into();
+        let data_valid =
+            buffer[index] == FRAME_IDENTIFIER && buffer.len() > MIN_PACKET_LENGTH.into();
 
         if !data_valid {
             return Err(ParseError(index));
