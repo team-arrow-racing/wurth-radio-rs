@@ -70,7 +70,7 @@ impl<'a> CommandBuilder<'a, Uninitialized> {
         // TODO inform that data must be a minimum of 9 bytes in length
         builder.try_append_data(&[FRAME_IDENTIFIER]);
         builder.try_append_data(&[CMD_DATA_REQ]);
-        builder.try_append_data(&[data.len().try_into().unwrap()]);
+        builder.try_append_data(&[data.len() as u8]);
         builder.try_append_data(data);
 
         builder
